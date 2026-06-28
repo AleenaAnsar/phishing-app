@@ -22,12 +22,91 @@ st.set_page_config(
 # ── CSS ────────────────────────────────────────────────────────────────────
 st.markdown("""
 <style>
+
+/* ── Animated cyber background ── */
+@keyframes float1 { 0%,100%{transform:translateY(0) rotate(0deg);opacity:0.07} 50%{transform:translateY(-30px) rotate(10deg);opacity:0.13} }
+@keyframes float2 { 0%,100%{transform:translateY(0) rotate(0deg);opacity:0.05} 50%{transform:translateY(-20px) rotate(-8deg);opacity:0.10} }
+@keyframes float3 { 0%,100%{transform:translateY(0) rotate(0deg);opacity:0.06} 50%{transform:translateY(-25px) rotate(5deg);opacity:0.11} }
+@keyframes scanline { 0%{top:-100%} 100%{top:200%} }
+@keyframes pulse-glow { 0%,100%{box-shadow:0 0 30px rgba(124,58,237,0.15)} 50%{box-shadow:0 0 60px rgba(168,85,247,0.25)} }
+
 [data-testid="stAppViewContainer"] {
-    background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+    background:
+        linear-gradient(135deg, #080618 0%, #0f0a2e 40%, #130d35 70%, #0a0820 100%) !important;
     min-height: 100vh;
+    position: relative;
+    overflow: hidden;
 }
+
+/* Cyber grid overlay */
+[data-testid="stAppViewContainer"]::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-image:
+        linear-gradient(rgba(124,58,237,0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(124,58,237,0.06) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Moving scan line */
+[data-testid="stAppViewContainer"]::after {
+    content: '';
+    position: fixed;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg,
+        transparent,
+        rgba(168,85,247,0.15),
+        rgba(124,58,237,0.3),
+        rgba(168,85,247,0.15),
+        transparent);
+    animation: scanline 8s linear infinite;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Floating background icons */
+.bg-icons {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.bg-icon {
+    position: absolute;
+    font-size: 5rem;
+    filter: blur(1px);
+    user-select: none;
+}
+.bg-icon:nth-child(1)  { top:5%;  left:3%;  font-size:4rem;  animation: float1 7s ease-in-out infinite; }
+.bg-icon:nth-child(2)  { top:12%; left:88%; font-size:5rem;  animation: float2 9s ease-in-out infinite; }
+.bg-icon:nth-child(3)  { top:28%; left:6%;  font-size:3rem;  animation: float3 6s ease-in-out infinite; }
+.bg-icon:nth-child(4)  { top:35%; left:92%; font-size:3.5rem;animation: float1 8s ease-in-out infinite 1s; }
+.bg-icon:nth-child(5)  { top:55%; left:2%;  font-size:4.5rem;animation: float2 7s ease-in-out infinite 2s; }
+.bg-icon:nth-child(6)  { top:60%; left:85%; font-size:3rem;  animation: float3 9s ease-in-out infinite 1s; }
+.bg-icon:nth-child(7)  { top:75%; left:10%; font-size:3.5rem;animation: float1 6s ease-in-out infinite 3s; }
+.bg-icon:nth-child(8)  { top:80%; left:78%; font-size:4rem;  animation: float2 8s ease-in-out infinite 2s; }
+.bg-icon:nth-child(9)  { top:90%; left:45%; font-size:3rem;  animation: float3 7s ease-in-out infinite 1s; }
+.bg-icon:nth-child(10) { top:20%; left:48%; font-size:2.5rem;animation: float1 10s ease-in-out infinite 4s; }
+.bg-icon:nth-child(11) { top:68%; left:55%; font-size:3rem;  animation: float2 9s ease-in-out infinite 3s; }
+.bg-icon:nth-child(12) { top:42%; left:30%; font-size:2rem;  animation: float3 8s ease-in-out infinite 5s; }
+
 [data-testid="stHeader"] { background: transparent; }
 [data-testid="stSidebar"] { display: none; }
+
+/* Make main content sit above background */
+[data-testid="stMainBlockContainer"] {
+    position: relative;
+    z-index: 2;
+}
 
 .main-title {
     text-align: center;
@@ -45,13 +124,15 @@ st.markdown("""
     margin-bottom: 2rem;
 }
 
+/* Glass card effect for main content area */
 [data-testid="stTextInput"] > div > div > input {
-    background: #1e1b4b !important;
+    background: rgba(30,27,75,0.85) !important;
     color: #e2e8f0 !important;
     border: 2px solid #7c3aed !important;
     border-radius: 12px !important;
     font-size: 1rem !important;
     padding: 14px 16px !important;
+    backdrop-filter: blur(10px) !important;
 }
 [data-testid="stTextInput"] > div > div > input:focus {
     border-color: #a855f7 !important;
@@ -82,20 +163,22 @@ st.markdown("""
 }
 
 .result-phishing {
-    background: linear-gradient(135deg, #450a0a, #7f1d1d);
+    background: linear-gradient(135deg, rgba(69,10,10,0.95), rgba(127,29,29,0.95));
     border: 2px solid #ef4444;
     border-radius: 16px;
     padding: 1.5rem 2rem;
     margin: 1.2rem 0;
     box-shadow: 0 0 30px rgba(239,68,68,0.3);
+    backdrop-filter: blur(10px);
 }
 .result-legit {
-    background: linear-gradient(135deg, #052e16, #14532d);
+    background: linear-gradient(135deg, rgba(5,46,22,0.95), rgba(20,83,45,0.95));
     border: 2px solid #22c55e;
     border-radius: 16px;
     padding: 1.5rem 2rem;
     margin: 1.2rem 0;
     box-shadow: 0 0 30px rgba(34,197,94,0.3);
+    backdrop-filter: blur(10px);
 }
 .result-title {
     font-size: 1.8rem;
@@ -110,7 +193,7 @@ st.markdown("""
 }
 
 .seg-card {
-    background: #1e1b4b;
+    background: rgba(30,27,75,0.85);
     border: 1px solid #4c1d95;
     border-radius: 10px;
     padding: 0.6rem 1rem;
@@ -118,11 +201,12 @@ st.markdown("""
     font-family: monospace;
     font-size: 0.85rem;
     color: #e2e8f0;
+    backdrop-filter: blur(8px);
 }
 .seg-label { color: #a78bfa; font-weight: 700; }
 
 .flag-box {
-    background: #1c1917;
+    background: rgba(28,25,23,0.9);
     border: 1px solid #78350f;
     border-radius: 10px;
     padding: 0.8rem 1rem;
@@ -130,15 +214,17 @@ st.markdown("""
     font-size: 0.88rem;
     color: #fde68a;
     line-height: 1.9;
+    backdrop-filter: blur(8px);
 }
 .flag-safe {
-    background: #052e16;
+    background: rgba(5,46,22,0.9);
     border: 1px solid #166534;
     border-radius: 10px;
     padding: 0.8rem 1rem;
     margin-top: 0.3rem;
     font-size: 0.88rem;
     color: #86efac;
+    backdrop-filter: blur(8px);
 }
 
 hr { border-color: #4c1d95 !important; }
@@ -153,6 +239,22 @@ hr { border-color: #4c1d95 !important; }
 
 #MainMenu, footer, header { visibility: hidden; }
 </style>
+
+<!-- Floating background phishing/security themed icons -->
+<div class="bg-icons">
+    <div class="bg-icon">🛡️</div>
+    <div class="bg-icon">🔒</div>
+    <div class="bg-icon">⚠️</div>
+    <div class="bg-icon">🔐</div>
+    <div class="bg-icon">🕵️</div>
+    <div class="bg-icon">🦠</div>
+    <div class="bg-icon">🔒</div>
+    <div class="bg-icon">🛡️</div>
+    <div class="bg-icon">💀</div>
+    <div class="bg-icon">⚠️</div>
+    <div class="bg-icon">🔗</div>
+    <div class="bg-icon">🔐</div>
+</div>
 """, unsafe_allow_html=True)
 
 # ── Constants ──────────────────────────────────────────────────────────────
@@ -217,7 +319,7 @@ def risk_flags(url: str, segs: dict) -> list:
     if re.search(r'\d+\.\d+\.\d+\.\d+', url):
         flags.append("⚠️ This link uses a number address instead of a real website name")
     if len(url) > 200:
-        flags.append(f"⚠️ This link is unusually long — scammers often do this to hide what's inside")
+        flags.append("⚠️ This link is unusually long — scammers often do this to hide what's inside")
     if url.count('.') > 5:
         flags.append("⚠️ Too many dots in the link — this is a common trick to confuse you")
     if '@' in url:
@@ -242,7 +344,6 @@ def build_explanation(label, ph, segs, flags):
     domain = segs["domain_tld"]
 
     if label == "Phishing":
-        # Pick a friendly reason based on what looks most wrong
         if any(b in segs["subdomain"] for b in
                ['paypal','amazon','google','apple','microsoft',
                 'netflix','facebook','instagram','bank','secure','login','verify','update']):
@@ -272,7 +373,6 @@ def build_explanation(label, ph, segs, flags):
                 f"The website <b>{domain}</b> looks like it was made to trick people. "
                 f"Our AI spotted patterns in this link that are very common in scam websites."
             )
-
         message = (
             f"⚠️ <b>Our AI thinks this link is not safe.</b><br><br>"
             f"{reason}<br><br>"
@@ -281,11 +381,10 @@ def build_explanation(label, ph, segs, flags):
             f"If someone sent you this, they may be trying to steal your information."
         )
         box_style = (
-            "background:#450a0a;border:2px solid #ef4444;border-radius:14px;"
+            "background:rgba(69,10,10,0.92);border:2px solid #ef4444;border-radius:14px;"
             "padding:1.4rem 1.7rem;color:#fca5a5;margin-top:1.2rem;line-height:2;"
-            "font-size:0.95rem;"
+            "font-size:0.95rem;backdrop-filter:blur(10px);"
         )
-
     else:
         if not flags:
             reason = (
@@ -302,16 +401,15 @@ def build_explanation(label, ph, segs, flags):
                 "Our AI thinks it's probably safe, but since you're not 100% sure, "
                 "double-check the website name carefully before entering anything personal."
             )
-
         message = (
             f"✅ <b>This link looks safe.</b><br><br>"
             f"{reason}<br><br>"
             f"{advice}"
         )
         box_style = (
-            "background:#052e16;border:2px solid #22c55e;border-radius:14px;"
+            "background:rgba(5,46,22,0.92);border:2px solid #22c55e;border-radius:14px;"
             "padding:1.4rem 1.7rem;color:#86efac;margin-top:1.2rem;line-height:2;"
-            "font-size:0.95rem;"
+            "font-size:0.95rem;backdrop-filter:blur(10px);"
         )
 
     return f'<div style="{box_style}">{message}</div>'
@@ -329,8 +427,8 @@ model, tokenizers, seg_max = load_artifacts()
 
 if model is None:
     st.markdown("""
-    <div style='background:#450a0a;border:2px solid #ef4444;border-radius:12px;
-                padding:1.5rem;color:#fca5a5;margin:1rem 0;'>
+    <div style='background:rgba(69,10,10,0.9);border:2px solid #ef4444;border-radius:12px;
+                padding:1.5rem;color:#fca5a5;margin:1rem 0;backdrop-filter:blur(10px);'>
     <b>⛔ Model files not found.</b><br><br>
     Please make sure these files are in a folder called <code>models/</code>
     next to this app:<br><br>
@@ -361,8 +459,9 @@ if go and url_in.strip():
             result = predict(url_in.strip(), model, tokenizers, seg_max)
         except Exception as e:
             st.markdown(f"""
-            <div style='background:#450a0a;border:2px solid #ef4444;border-radius:12px;
-                        padding:1.2rem;color:#fca5a5;'>
+            <div style='background:rgba(69,10,10,0.9);border:2px solid #ef4444;
+                        border-radius:12px;padding:1.2rem;color:#fca5a5;
+                        backdrop-filter:blur(10px);'>
             ❌ <b>Something went wrong while checking:</b><br><code>{str(e)}</code>
             </div>""", unsafe_allow_html=True)
             st.stop()
@@ -398,7 +497,7 @@ if go and url_in.strip():
             <span style='color:#c4b5fd;font-weight:600;'>Safety Meter</span>
             <span>🟢 Safe</span>
         </div>
-        <div style='background:#1e1b4b;border-radius:999px;height:14px;overflow:hidden;'>
+        <div style='background:rgba(30,27,75,0.8);border-radius:999px;height:14px;overflow:hidden;'>
             <div style='width:{safety:.1f}%;background:{bar_color};
                         height:100%;border-radius:999px;
                         box-shadow:0 0 12px {bar_color};'></div>
@@ -449,8 +548,8 @@ if go and url_in.strip():
 
 elif go:
     st.markdown("""
-    <div style='background:#1c1917;border:1px solid #78350f;border-radius:10px;
-                padding:0.8rem 1rem;color:#fde68a;text-align:center;'>
+    <div style='background:rgba(28,25,23,0.9);border:1px solid #78350f;border-radius:10px;
+                padding:0.8rem 1rem;color:#fde68a;text-align:center;backdrop-filter:blur(8px);'>
     ⚠️ Please paste a link first before clicking Check.
     </div>""", unsafe_allow_html=True)
 
@@ -476,12 +575,13 @@ for col, (ex_label, ex_url) in zip(cols, examples):
                 try:
                     r       = predict(ex_url, model, tokenizers, seg_max)
                     verdict = "🚨 Dangerous" if r["phishing_prob"] >= 0.5 else "✅ Safe"
-                    color   = "#7f1d1d" if "Dangerous" in verdict else "#052e16"
+                    color   = "rgba(127,29,29,0.9)" if "Dangerous" in verdict else "rgba(5,46,22,0.9)"
                     border  = "#ef4444" if "Dangerous" in verdict else "#22c55e"
                     st.markdown(f"""
                     <div style='background:{color};border:1px solid {border};
                                 border-radius:10px;padding:0.7rem;
-                                font-size:0.82rem;color:#f3f4f6;margin-top:0.4rem;'>
+                                font-size:0.82rem;color:#f3f4f6;margin-top:0.4rem;
+                                backdrop-filter:blur(8px);'>
                     <b>{verdict}</b><br>
                     We are {(1 - r['phishing_prob'] if r['phishing_prob'] < 0.5 else r['phishing_prob'])*100:.0f}%
                     confident<br>
