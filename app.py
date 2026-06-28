@@ -417,7 +417,7 @@ def build_explanation(label, ph, segs, flags):
 # ══════════════════════════════════════════════════════════════════════════
 # MAIN UI
 # ══════════════════════════════════════════════════════════════════════════
-st.markdown("<div class='main-title'>🛡️ Phishing URL Detector</div>", unsafe_allow_html=True)
+st.markdown("<div class='main-title'> Phishing URL Detector</div>", unsafe_allow_html=True)
 st.markdown(
     "<div class='main-subtitle'>Not sure if a link is safe? Paste it below and we'll check it for you.</div>",
     unsafe_allow_html=True
@@ -592,6 +592,6 @@ for col, (ex_label, ex_url) in zip(cols, examples):
 
 # ── Footer ─────────────────────────────────────────────────────────────────
 st.markdown(
-    "<div class='footer'>🛡️ Phishing URL Detector &nbsp;|&nbsp; Powered by AI &nbsp;|&nbsp; Built with Streamlit</div>",
+    "<div class='footer'>Phishing URL Detector &nbsp;|&nbsp; Powered by AI &nbsp;|&nbsp; Built with Streamlit</div>",
     unsafe_allow_html=True
 )
