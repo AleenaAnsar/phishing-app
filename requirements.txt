@@ -1,4 +1,4 @@
 streamlit
 numpy
 tldextract
-tensorflow-cpu
+tensorflow-cpu==2.19.1
