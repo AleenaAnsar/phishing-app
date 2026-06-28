@@ -1,4 +1,5 @@
-streamlit==1.32.0
-tensorflow-cpu==2.15.0
-tldextract==5.1.1
-numpy==1.26.4
+streamlit
+numpy
+tldextract
+tf-keras
+tensorflow-cpu==2.16.2
